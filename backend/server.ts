@@ -2,8 +2,8 @@ import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
-import path from 'path'
 import uploadRoutes from './routes/upload.routes'
+import { join } from 'path'
 
 const app = express()
 const PORT = 3001
@@ -20,7 +20,7 @@ app.use(
 )
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+app.use('/uploads', express.static(join(__dirname, 'uploads')))
 
 // Routes
 app.use('/api', uploadRoutes)
