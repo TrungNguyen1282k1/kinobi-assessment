@@ -1,3 +1,4 @@
 Step to run the application:
-1. npm install
-2. npm run dev
+1. cd frontend
+2. npm install
+3. npm run dev
