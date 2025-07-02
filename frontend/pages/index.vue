@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1>Image Upload Application</h1>
+        <h1>File Upload Application</h1>
       </v-col>
 
       <v-col cols="12">

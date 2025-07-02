@@ -12,12 +12,12 @@
 export default {
   head() {
     return {
-      title: 'Image Upload App',
+      title: 'File Upload App',
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: 'A web application for uploading images using Nuxt.js and Vuetify.js'
+          content: 'A web application for uploading files using Nuxt.js and Vuetify.js'
         }
       ]
     }

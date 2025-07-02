@@ -1,20 +1,19 @@
 <template>
   <v-form>
-    <v-file-input
-      v-model="file"
-      label="Choose an image"
-      accept="image/*"
-      outlined
-      dense
-    />
+    <v-file-input v-model="file" label="Choose a file" accept="*/*" outlined dense />
 
     <v-btn color="primary" class="mt-2" @click="uploadFile">
-      Upload Image
+      Upload File
     </v-btn>
 
-    <v-snackbar v-model="snackbar" timeout="3000" color="success">
+    <v-snackbar v-model="snackbarSuccess" timeout="3000" color="success">
       {{ snackbarMessage }}
     </v-snackbar>
+
+    <v-snackbar v-model="snackbarError" timeout="3000" color="error">
+      {{ snackbarErrorMessage }}
+    </v-snackbar>
+
 
     <div v-if="uploadedFiles.length" class="mt-4">
       <h3>Uploaded Files</h3>
@@ -38,8 +37,10 @@ export default {
     return {
       file: null,
       uploadedFiles: [],
-      snackbar: false,
-      snackbarMessage: ''
+      snackbarSuccess: false,
+      snackbarError: false,
+      snackbarMessage: '',
+      snackbarErrorMessage: ''
     }
   },
   mounted() {
@@ -48,8 +49,8 @@ export default {
   methods: {
     async uploadFile() {
       if (!this.file) {
-        this.snackbarMessage = 'Please select a file first.'
-        this.snackbar = true
+        this.snackbarErrorMessage = 'Please select a file first.'
+        this.snackbarError = true
         return
       }
 
@@ -62,14 +63,14 @@ export default {
         })
 
         this.snackbarMessage = 'File uploaded successfully!'
-        this.snackbar = true
+        this.snackbarSuccess = true
 
         this.uploadedFiles.push(response.data.filename)
         this.file = null
       } catch (err) {
         console.error('Upload failed', err)
-        this.snackbarMessage = 'Failed to upload file.'
-        this.snackbar = true
+        this.snackbarErrorMessage = 'Failed to upload file.'
+        this.snackbarError = true
       }
     },
 
@@ -89,6 +90,7 @@ export default {
 ul {
   padding-left: 1rem;
 }
+
 a {
   text-decoration: none;
   color: #1976d2;

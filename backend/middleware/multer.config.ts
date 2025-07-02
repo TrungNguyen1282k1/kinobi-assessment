@@ -5,8 +5,13 @@ import sanitize from 'sanitize-filename'
 import { Request } from 'express'
 
 const uploadDir = path.join(__dirname, '../uploads')
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir)
 
+// Ensure uploads folder exists
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
+// Define storage behavior
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     cb(null, uploadDir)
@@ -17,17 +22,25 @@ const storage = multer.diskStorage({
   }
 })
 
+// Allow general files, disallow dangerous types
+const disallowedTypes = [
+  'application/x-msdownload', // .exe
+  'application/x-sh',         // .sh
+  'application/x-bat',        // .bat
+  'application/javascript',   // .js (optional depending on context)
+]
+
 const fileFilter = (_req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml']
-  if (!allowedTypes.includes(file.mimetype)) {
-    return cb(new Error('Only image files are allowed.'))
+  if (disallowedTypes.includes(file.mimetype)) {
+    return cb(new Error('Disallowed file type.'))
   }
   cb(null, true)
 }
 
+// Export the configured multer instance
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
   fileFilter
 })
 
