@@ -1,6 +1,7 @@
 export default {
-  target: "static",
+  target: 'static',
   ssr: false,
+
   head: {
     title: "My Nuxt Vuetify Upload App",
     meta: [
