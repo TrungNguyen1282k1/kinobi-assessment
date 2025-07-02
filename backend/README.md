@@ -1,3 +1,3 @@
-Step to run the application:
+Step to run the server:
 1. npm install
 2. npm run dev
