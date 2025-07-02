@@ -36,7 +36,7 @@ export default {
   ],
 
   axios: {
-    baseURL: 'http://localhost:3001/api'
+    baseURL: 'https://kinobi-assessment.onrender.com/api'
   },
 
   build: {
