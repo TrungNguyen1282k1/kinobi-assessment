@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "public": true,
+  "builds": [
+    {
+      "src": "nuxt.config.js",
+      "use": "@nuxt/vercel-builder",
+      "config": {
+        "generateCommand": "nuxt generate",
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/" }
+  ]
+}
