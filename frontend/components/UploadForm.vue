@@ -1,98 +1,77 @@
 <template>
   <v-form>
-    <v-file-input v-model="file" label="Choose a file" accept="*/*" outlined dense />
+    <FileInput v-model="file" />
 
-    <v-btn color="primary" class="mt-2" @click="uploadFile">
+    <v-btn color="primary" class="mt-2" @click="handleUpload">
       Upload File
     </v-btn>
 
-    <v-snackbar v-model="snackbarSuccess" timeout="3000" color="success">
-      {{ snackbarMessage }}
-    </v-snackbar>
+    <UploadSnackbar v-model="snackbarSuccess" :message="snackbarMessage" color="success" />
+    <UploadSnackbar v-model="snackbarError" :message="snackbarErrorMessage" color="error" />
 
-    <v-snackbar v-model="snackbarError" timeout="3000" color="error">
-      {{ snackbarErrorMessage }}
-    </v-snackbar>
-
-
-    <div v-if="uploadedFiles.length" class="mt-4">
-      <h3>Uploaded Files</h3>
-      <ul>
-        <li v-for="(filename, index) in uploadedFiles" :key="index">
-          <a :href="`${$axios.defaults.baseURL.replace('/api', '')}/uploads/${filename}`" target="_blank">
-            {{ filename }}
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div v-else class="mt-4">
-      No files uploaded yet.
-    </div>
+    <UploadedFileList v-if="uploadedFiles.length" :files="uploadedFiles" class="mt-4" />
+    <div v-else class="mt-4">No files uploaded yet.</div>
   </v-form>
 </template>
 
 <script>
+import FileInput from '~/components/FileInput.vue'
+import UploadSnackbar from '~/components/UploadSnackbar.vue'
+import UploadedFileList from '~/components/UploadedFileList.vue'
+
 export default {
+  components: {
+    FileInput,
+    UploadSnackbar,
+    UploadedFileList
+  },
   data() {
     return {
       file: null,
-      uploadedFiles: [],
-      snackbarSuccess: false,
-      snackbarError: false,
-      snackbarMessage: '',
-      snackbarErrorMessage: ''
+      userId: 'user123'
+    }
+  },
+  computed: {
+    uploadedFiles() {
+      return this.$store.state.files
+    },
+    snackbarSuccess: {
+      get() {
+        return this.$store.state.snackbarSuccess
+      },
+      set(val) {
+        this.$store.commit('toggleSnackbarSuccess', val)
+      }
+    },
+    snackbarError: {
+      get() {
+        return this.$store.state.snackbarError
+      },
+      set(val) {
+        this.$store.commit('toggleSnackbarError', val)
+      }
+    },
+    snackbarMessage() {
+      return this.$store.state.snackbarMessage
+    },
+    snackbarErrorMessage() {
+      return this.$store.state.snackbarErrorMessage
     }
   },
   mounted() {
-    this.fetchUploadedFiles()
+    this.$store.dispatch('fetchFiles', this.userId)
   },
   methods: {
-    async uploadFile() {
+    async handleUpload() {
       if (!this.file) {
-        this.snackbarErrorMessage = 'Please select a file first.'
+        this.$store.commit('setSnackbarErrorMessage', 'Please select a file first.')
         this.snackbarError = true
         return
       }
 
-      const formData = new FormData()
-      formData.append('file', this.file)
-
-      try {
-        const response = await this.$axios.post('/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
-
-        this.snackbarMessage = 'File uploaded successfully!'
-        this.snackbarSuccess = true
-
-        this.uploadedFiles.push(response.data.filename)
-        this.file = null
-      } catch (err) {
-        console.error('Upload failed', err)
-        this.snackbarErrorMessage = 'Failed to upload file.'
-        this.snackbarError = true
-      }
-    },
-
-    async fetchUploadedFiles() {
-      try {
-        const response = await this.$axios.get('/files')
-        this.uploadedFiles = response.data
-      } catch (err) {
-        console.error('Failed to fetch uploaded files', err)
-      }
+      await this.$store.dispatch('uploadFile', this.file)
+      this.file = null
     }
   }
 }
 </script>
-
-<style scoped>
-ul {
-  padding-left: 1rem;
-}
-
-a {
-  text-decoration: none;
-  color: #1976d2;
-}
-</style>
