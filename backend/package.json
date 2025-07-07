@@ -14,10 +14,11 @@
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.0.0",
+    "dotenv": "^17.0.1",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.1",
     "helmet": "^8.1.0",
+    "mongoose": "^8.16.1",
     "multer": "^2.0.1",
     "sanitize-filename": "^1.6.3"
   },
@@ -25,6 +26,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/helmet": "^0.0.48",
+    "@types/mongoose": "^5.11.96",
     "@types/multer": "^1.4.13",
     "@types/node": "^24.0.8",
     "nodemon": "^3.1.10",
