@@ -4,9 +4,16 @@ import cors from 'cors'
 import rateLimit from 'express-rate-limit'
 import uploadRoutes from './routes/upload.routes'
 import { join } from 'path'
+import { connectToDB } from './utils/db'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
+
+// Connect to MongoDB
+connectToDB()
 
 // Middlewares
 app.use(cors())
